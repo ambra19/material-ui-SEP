@@ -56,6 +56,8 @@ describe('<ImageListItem />', () => {
 
         expect(getByTestId('test-children')).not.to.equal(null);
       });
+
+
     });
 
     describe('prop: component', () => {
@@ -66,7 +68,7 @@ describe('<ImageListItem />', () => {
     });
 
     describe('prop: variant', () => {
-      it('should render with the  woven class', () => {
+      it('should render with the woven class', () => {
         const { getByTestId } = render(
           <ImageList variant="woven">
             <ImageListItem data-testid="test-children" />
@@ -75,6 +77,41 @@ describe('<ImageListItem />', () => {
 
         expect(getByTestId('test-children')).to.have.class(classes.root);
         expect(getByTestId('test-children')).to.have.class(classes.woven);
+      });
+
+      it('should render with the masonry class', () => {
+        const { getByTestId } = render(
+          <ImageList variant="masonry">
+            <ImageListItem data-testid="test-children" />
+          </ImageList>,
+        );
+
+        expect(getByTestId('test-children')).to.have.class(classes.root);
+        expect(getByTestId('test-children')).to.have.class(classes.masonry);
+      });
+    });
+
+    describe('prop: rowHeight and rows', () => {
+      it('should calculate height for woven variant correctly', () => {
+        const { container } = render(
+          <ImageList variant="woven">
+            <ImageListItem rowHeight={100} rows={2} />
+          </ImageList>,
+        );
+
+        const item = container.firstChild.firstChild;
+        expect(item).to.have.style('height', 'undefined'); // woven variant sets height to undefined
+      });
+
+      it('should calculate height correctly for non-woven variant', () => {
+        const { container } = render(
+          <ImageList>
+            <ImageListItem rowHeight={100} rows={2} gap={10} />
+          </ImageList>,
+        );
+
+        const item = container.firstChild.firstChild;
+        expect(item).to.have.style('height', '210px'); // 100 * 2 + 10 * (2 - 1)
       });
     });
   });

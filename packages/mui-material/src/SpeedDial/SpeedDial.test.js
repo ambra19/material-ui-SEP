@@ -134,6 +134,22 @@ describe('<SpeedDial />', () => {
     });
   });
 
+  describe('prop: onClose', () => {
+    it('should be called when SpeedDial is closed', () => {
+      const handleClose = spy();
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps} onClose={handleClose}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+      const buttonWrapper = getByRole('button', { expanded: true });
+
+      fireEvent.keyDown(buttonWrapper, { key: 'Escape' });
+      expect(handleClose.callCount).to.equal(1);
+      expect(handleClose.args[0][1]).to.equal('escapeKeyDown');
+    });
+  });
+
   describe('prop: direction', () => {
     [
       ['up', 'directionUp'],
@@ -230,6 +246,39 @@ describe('<SpeedDial />', () => {
       expect(queryByRole('tooltip')).to.equal(null);
       expect(fab).to.have.attribute('aria-expanded', 'false');
       expect(fab).toHaveFocus();
+    });
+  });
+
+  describe('prop: onFocus, onBlur, onMouseEnter, onMouseLeave', () => {
+    it('should call onFocus, onBlur, onMouseEnter, onMouseLeave', () => {
+      const handleFocus = spy();
+      const handleBlur = spy();
+      const handleMouseEnter = spy();
+      const handleMouseLeave = spy();
+      const { getByRole } = render(
+        <SpeedDial
+          {...defaultProps}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <FakeAction />
+        </SpeedDial>,
+      );
+      const buttonWrapper = getByRole('button', { expanded: true });
+
+      fireEvent.focus(buttonWrapper);
+      expect(handleFocus.callCount).to.equal(1);
+
+      fireEvent.blur(buttonWrapper);
+      expect(handleBlur.callCount).to.equal(1);
+
+      fireEvent.mouseEnter(buttonWrapper);
+      expect(handleMouseEnter.callCount).to.equal(1);
+
+      fireEvent.mouseLeave(buttonWrapper);
+      expect(handleMouseLeave.callCount).to.equal(1);
     });
   });
 
@@ -465,6 +514,162 @@ describe('<SpeedDial />', () => {
 
       const child = getByTestId('speedDial').firstChild;
       expect(child).toHaveComputedStyle({ transitionDuration: '0.001s' });
+    });
+  });
+
+  describe('hidden prop', () => {
+    it('should not render the SpeedDialFab when hidden', () => {
+      const { queryByRole } = render(
+        <SpeedDial {...defaultProps} hidden>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      expect(queryByRole('button')).to.equal(null);
+    });
+
+    it('should render the SpeedDialFab when not hidden', () => {
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps} hidden={false}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      expect(getByRole('button')).to.not.equal(null);
+    });
+  });
+
+  describe('prop: FabProps', () => {
+    it('should pass FabProps to the SpeedDialFab', () => {
+      const fabProps = { 'data-testid': 'fab' };
+      const { getByTestId } = render(
+        <SpeedDial {...defaultProps} FabProps={fabProps}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      expect(getByTestId('fab')).to.not.equal(null);
+    });
+
+    it('should call FabProps.onClick', () => {
+      const handleClick = spy();
+      const fabProps = { onClick: handleClick };
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps} FabProps={fabProps}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      fireEvent.click(getByRole('button'));
+      expect(handleClick.callCount).to.equal(1);
+    });
+
+    it('should apply custom className from FabProps', () => {
+      const fabProps = { className: 'custom-class' };
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps} FabProps={fabProps}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      expect(getByRole('button')).to.have.class('custom-class');
+    });
+  });
+
+  describe('prop: TransitionComponent', () => {
+    function NoTransition(props) {
+      const { children, in: inProp } = props;
+
+      if (!inProp) {
+        return null;
+      }
+      return children;
+    }
+
+    it('should use the provided TransitionComponent', () => {
+      const { queryByRole } = render(
+        <SpeedDial {...defaultProps} TransitionComponent={NoTransition}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      expect(queryByRole('button')).to.not.equal(null);
+    });
+
+    it('should pass TransitionProps to the TransitionComponent', () => {
+      const handleEnter = spy();
+      const transitionProps = { onEnter: handleEnter };
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps} TransitionComponent={NoTransition} TransitionProps={transitionProps}>
+          <FakeAction />
+        </SpeedDial>,
+      );
+
+      fireEvent.mouseEnter(getByRole('button'));
+      expect(handleEnter.callCount).to.equal(1);
+    });
+  });
+
+  describe('with invalid child', () => {
+    it('should console.error when passed a fragment as a child', () => {
+      const consoleError = spy(console, 'error');
+      render(
+        <SpeedDial {...defaultProps}>
+          <React.Fragment>
+            <SpeedDialAction icon={icon} tooltipTitle="action1" />
+          </React.Fragment>
+        </SpeedDial>,
+      );
+
+      expect(consoleError.callCount).to.equal(1);
+      consoleError.restore();
+    });
+
+    it('should not console.error when passed valid children', () => {
+      const consoleError = spy(console, 'error');
+      render(
+        <SpeedDial {...defaultProps}>
+          <SpeedDialAction icon={icon} tooltipTitle="action1" />
+        </SpeedDial>,
+      );
+
+      expect(consoleError.callCount).to.equal(0);
+      consoleError.restore();
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle no children gracefully', () => {
+      const { queryByRole } = render(<SpeedDial {...defaultProps} />);
+      expect(queryByRole('menuitem')).to.equal(null);
+    });
+
+    it('should handle a single child gracefully', () => {
+      const { getByRole } = render(
+        <SpeedDial {...defaultProps}>
+          <SpeedDialAction icon={icon} tooltipTitle="action1" />
+        </SpeedDial>,
+      );
+
+      expect(getByRole('menuitem')).to.not.equal(null);
+    });
+  });
+
+  describe('prop: slotProps and slots', () => {
+    it('should apply slotProps and slots', () => {
+      const { getByRole } = render(
+        <SpeedDial
+          {...defaultProps}
+          slots={{ transition: NoTransition }}
+          slotProps={{ transition: { timeout: 500 } }}
+        >
+          <FakeAction />
+        </SpeedDial>,
+      );
+      const buttonWrapper = getByRole('button', { expanded: true });
+
+      fireEvent.mouseEnter(buttonWrapper);
+      expect(buttonWrapper).to.have.style('transition-duration', '500ms');
     });
   });
 });
