@@ -147,7 +147,7 @@ describe('<SvgIcon />', () => {
     expect(container.firstChild).toHaveComputedStyle({ fontSize: '24px' }); // fontSize: medium -> 1.5rem = 24px
   });
 
-  it('should have `fill="currentColor"`', function test() {
+  it('should have fill="currentColor"', function test() {
     if (!/jsdom/.test(window.navigator.userAgent)) {
       this.skip();
     }
@@ -160,7 +160,7 @@ describe('<SvgIcon />', () => {
     expect(container.firstChild).toHaveComputedStyle({ fill: 'currentColor' });
   });
 
-  it('should not add `fill` if svg is a direct child', function test() {
+  it('should not add fill if svg is a direct child', function test() {
     if (!/jsdom/.test(window.navigator.userAgent)) {
       this.skip();
     }
@@ -173,5 +173,34 @@ describe('<SvgIcon />', () => {
     );
 
     expect(container.firstChild).not.toHaveComputedStyle({ fill: 'currentColor' });
+  });
+
+  // New test for muiName assignment
+  it('should assign muiName to SvgIcon', () => {
+    function SvgIconComponent() {
+  return <SvgIcon />
+}
+    expect(SvgIconComponent.muiName).to.equal('SvgIcon');
+  });
+
+  // New test for viewBox inheritance logic
+  it('should set viewBox based on inheritViewBox prop', () => {
+    const { container: containerWithInherit } = render(
+      <SvgIcon inheritViewBox>
+        <svg viewBox="0 0 50 50">
+          {path}
+        </svg>
+      </SvgIcon>,
+    );
+    expect(containerWithInherit.firstChild).to.have.attribute('viewBox', '0 0 50 50');
+
+    const { container: containerWithoutInherit } = render(
+      <SvgIcon viewBox="0 0 30 30">
+        <svg viewBox="0 0 50 50">
+          {path}
+        </svg>
+      </SvgIcon>,
+    );
+    expect(containerWithoutInherit.firstChild).to.have.attribute('viewBox', '0 0 30 30');
   });
 });
