@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { expect } from 'chai';
 import PropTypes from 'prop-types';
+import sinon from 'sinon';
 import { createRenderer, strictModeDoubleLoggingSuppressed } from '@mui/internal-test-utils';
 import Paper, { paperClasses as classes } from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -40,7 +41,7 @@ describe('<Paper />', () => {
   });
 
   describe('prop: variant', () => {
-    it('adds a outlined class', () => {
+    it('adds an outlined class', () => {
       const { getByTestId } = render(
         <Paper data-testid="root" variant="outlined">
           Hello World
@@ -51,7 +52,7 @@ describe('<Paper />', () => {
     });
   });
 
-  it('should set the elevation elevation class', () => {
+  it('should set the elevation class', () => {
     const { getByTestId, setProps } = render(
       <Paper data-testid="root" elevation={16}>
         Hello World
@@ -83,31 +84,35 @@ describe('<Paper />', () => {
   });
 
   describe('warnings', () => {
+    let consoleErrorStub;
+
     beforeEach(() => {
-      PropTypes.resetWarningCache();
+      consoleErrorStub = sinon.stub(console, 'error');
     });
 
-    it('warns if the given `elevation` is not implemented in the theme', () => {
-      expect(() => {
-        render(<Paper elevation={25} />);
-      }).toErrorDev([
+    afterEach(() => {
+      consoleErrorStub.restore();
+    });
+
+    it('warns if the given elevation is not implemented in the theme', () => {
+      render(<Paper elevation={25} />);
+      expect(consoleErrorStub.callCount).to.equal(1);
+      expect(consoleErrorStub.args[0][0]).to.include(
         'MUI: The elevation provided <Paper elevation={25}> is not available in the theme.',
-        !strictModeDoubleLoggingSuppressed &&
-          'MUI: The elevation provided <Paper elevation={25}> is not available in the theme.',
-      ]);
+      );
     });
 
-    it('warns if `elevation={numberGreaterThanZero}` is used with `variant="outlined"`', () => {
-      expect(() => {
-        PropTypes.checkPropTypes(
-          Paper.propTypes,
-          { elevation: 5, variant: 'outlined' },
-          'prop',
-          'MockedName',
-        );
-      }).toErrorDev([
-        'MUI: Combining `elevation={5}` with `variant="outlined"` has no effect. Either use `elevation={0}` or use a different `variant`.',
-      ]);
+    it('warns if elevation={numberGreaterThanZero} is used with variant="outlined"', () => {
+      PropTypes.checkPropTypes(
+        Paper.propTypes,
+        { elevation: 5, variant: 'outlined' },
+        'prop',
+        'MockedName',
+      );
+      expect(consoleErrorStub.callCount).to.equal(1);
+      expect(consoleErrorStub.args[0][0]).to.include(
+        'MUI: Combining elevation={5} with variant="outlined" has no effect. Either use elevation={0} or use a different variant.',
+      );
     });
   });
 });
