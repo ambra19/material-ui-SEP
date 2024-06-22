@@ -1,9 +1,31 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { expect } from 'chai';
+import sinon from 'sinon';
 import { createRenderer } from '@mui/internal-test-utils';
 import Avatar from '@mui/material/Avatar';
 import AvatarGroup, { avatarGroupClasses as classes } from '@mui/material/AvatarGroup';
 import describeConformance from '../../test/describeConformance';
+import { isFragment } from 'react-is';
+
+const coverageInfo = {
+  conditionalBranches: {
+    renderSurplus: {
+      id: 1,
+      executed: false,
+    },
+    childrenHandling: {
+      id: 2,
+      executed: false,
+    },
+  },
+};
+
+const markConditionalExecuted = (branchName) => {
+  if (coverageInfo.conditionalBranches[branchName]) {
+    coverageInfo.conditionalBranches[branchName].executed = true;
+  }
+};
 
 describe('<AvatarGroup />', () => {
   const { render } = createRenderer();
@@ -28,7 +50,6 @@ describe('<AvatarGroup />', () => {
     }),
   );
 
-  // test additionalAvatar slot separately
   describeConformance(
     <AvatarGroup max={2}>
       <Avatar src="/fake.png" />
@@ -83,6 +104,7 @@ describe('<AvatarGroup />', () => {
       </AvatarGroup>,
     );
     expect(container.textContent).to.equal('%2');
+    markConditionalExecuted('renderSurplus'); 
   });
 
   it('should pass props from componentsProps.additionalAvatar to the slot component', () => {
@@ -207,5 +229,36 @@ describe('<AvatarGroup />', () => {
     expect(roundedAvatar).to.have.class('MuiAvatar-rounded');
     expect(roundedAvatar).not.to.have.class('MuiAvatar-circular');
     expect(roundedAvatar).not.to.have.class('MuiAvatar-square');
+  });
+
+  it('should log an error if children include a Fragment', () => {
+    const errorStub = sinon.stub(console, 'error');
+    render(
+      <AvatarGroup>
+        <React.Fragment>
+          <Avatar src="/fake.png" />
+        </React.Fragment>
+      </AvatarGroup>,
+    );
+    expect(errorStub.calledOnce).to.be.true;
+    expect(errorStub.args[0][0]).to.include(
+      "MUI: The AvatarGroup component doesn't accept a Fragment as a child.",
+    );
+    errorStub.restore();
+    markConditionalExecuted('childrenHandling'); 
+  });
+
+  it('should log an error if max prop is less than 2', () => {
+    const errorStub = sinon.stub(console, 'error');
+    PropTypes.checkPropTypes(AvatarGroup.propTypes, { max: 1 }, 'prop', 'AvatarGroup');
+    expect(errorStub.calledOnce).to.be.true;
+    expect(errorStub.args[0][0]).to.include('MUI: The prop max should be equal to 2 or above.');
+    errorStub.restore();
+    markConditionalExecuted('childrenHandling'); 
+  });
+
+  after(() => {
+    console.log('Function-based coverage information:');
+    console.log(coverageInfo);
   });
 });
