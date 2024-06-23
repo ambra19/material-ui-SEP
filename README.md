@@ -2,13 +2,13 @@
 
 ## Project chosen
 
-Name: <TODO>
+Name: material-ui
 
-URL: <TODO>
+URL: https://github.com/mui/material-ui.git 
 
-Number of lines of code and the tool used to count it: <TODO>
+Number of lines of code and the tool used to count it: 556495, Lizard
 
-Programming language: <TODO>
+Programming language: JavaScript
 
 ## Coverage measurement
 
@@ -40,7 +40,7 @@ Programming language: <TODO>
 
 <The following is supposed to be repeated for each group member>
 
-<Group member name>
+<Group 116>
 
 <Test 1>
 
