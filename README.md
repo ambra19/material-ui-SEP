@@ -14,15 +14,71 @@ Programming language: JavaScript
 
 ### Existing tool
 
-<Inform the name of the existing tool that was executed and how it was executed>
+Name of the existing tool: Istanbul
+
+How it was executed: 
+
+1. Run coverage of entire project:
+
+  pnpm run test:coverage
+
+2. Open coverage file:
+
+  open coverage/index.html
+
+3. Run test coverage of single file:
+
+  pnpm run test:coverage:single ‘path_to_the_file’
 
 <Show the coverage results provided by the existing tool with a screenshot>
 
 ### Your own coverage tool
 
 <The following is supposed to be repeated for each group member>
+////////////////////////////////
+Raluca
 
-<Group member name>
+<Function 1 name>
+
+<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+
+<Provide a screenshot of the coverage results output by the instrumentation>
+
+<Function 2 name>
+
+<Provide the same kind of information provided for Function 1>
+
+////////////////////////////////
+
+Briana
+
+<Function 1 name>
+
+<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+
+<Provide a screenshot of the coverage results output by the instrumentation>
+
+<Function 2 name>
+
+<Provide the same kind of information provided for Function 1>
+
+////////////////////////////////
+
+Denisa
+
+<Function 1 name>
+
+<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+
+<Provide a screenshot of the coverage results output by the instrumentation>
+
+<Function 2 name>
+
+<Provide the same kind of information provided for Function 1>
+
+////////////////////////////////
+
+Ambra
 
 <Function 1 name>
 
