@@ -18,17 +18,11 @@ Name of the existing tool: Istanbul
 
 How it was executed: 
 
-1. Run coverage of entire project:
+1. Run coverage of entire project: pnpm run test:coverage
 
-  pnpm run test:coverage
+2. Open coverage file: open coverage/index.html
 
-2. Open coverage file:
-
-  open coverage/index.html
-
-3. Run test coverage of single file:
-
-  pnpm run test:coverage:single ‘path_to_the_file’
+3. Run test coverage of single file: pnpm run test:coverage:single ‘path_to_the_file’
 
 <Show the coverage results provided by the existing tool with a screenshot>
 
@@ -36,6 +30,7 @@ How it was executed:
 
 <The following is supposed to be repeated for each group member>
 ////////////////////////////////
+  
 Raluca
 
 <Function 1 name>
