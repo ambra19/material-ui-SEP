@@ -111,7 +111,7 @@ Ambra
 
 <Provide a screenshot of the old coverage results by running an existing tool (the same as you already showed above)>
 
-<Provide a screenshot of the new coverage results by running the existing tool using all test modifications made by the group>
+![Sample Image](coverage-img/Coverage.png)
 
 ## Statement of individual contributions
 
