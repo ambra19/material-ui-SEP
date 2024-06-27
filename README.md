@@ -33,7 +33,7 @@ How it was executed:
   
 Raluca
 
-<getThemeValue>
+<getStyleValue>
 
 <Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
 
@@ -65,8 +65,6 @@ Denisa
 
 <Function 1 name>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
-
 <Provide a screenshot of the coverage results output by the instrumentation>
 
 <Function 2 name>
@@ -83,7 +81,7 @@ Ambra
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
-<getStyleValue>
+<getThemeValue>
 
 <Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
 
