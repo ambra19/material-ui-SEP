@@ -35,6 +35,7 @@ const coverageData = {
   },
 };
 
+
 const logCoverage = () => {
   console.log('Coverage Data:');
   for (const key in coverageData) {

@@ -45,7 +45,7 @@ const logCoverage = () => {
   for (const key in coverageData) {
     if (coverageData.hasOwnProperty(key)) {
       const { id, name, executed } = coverageData[key];
-      console.log(`ID ${id} - ${name}: ${executed ? 'Executed' : 'Not Executed'}`);
+      console.log(`ID: ${id} - ${name}: ${executed ? 'Executed' : 'Not Executed'}`);
     }
   }
 };
@@ -204,6 +204,7 @@ describe('ThemeProvider', () => {
     });
   });
 });
+
 
 after(() => {
   logCoverage();
