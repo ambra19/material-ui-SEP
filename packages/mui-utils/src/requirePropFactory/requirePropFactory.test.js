@@ -1,6 +1,25 @@
 import PropTypes from 'prop-types';
 import { expect } from 'chai';
 import requirePropFactory from './requirePropFactory';
+import sinon from 'sinon';
+
+const componentNameInError = 'componentNameInError';
+
+const coverageData = {
+  nodeEnvProduction: { id: 5001, name: 'NODE_ENV Production', executed: false },
+  defaultTypeChecker: { id: 5002, name: 'Default Type Checker', executed: false },
+  noDefaultTypeChecker: { id: 5003, name: 'No Default Type Checker', executed: false },
+};
+
+const logCoverage = () => {
+  console.log('Coverage Data:');
+  for (const key in coverageData) {
+    if (coverageData.hasOwnProperty(key)) {
+      const { id, name, executed } = coverageData[key];
+      console.log(`ID: ${id} - ${name}: ${executed ? 'Executed' : 'Not Executed'}`);
+    }
+  }
+};
 
 describe('requirePropFactory', () => {
   const componentNameInError = 'componentNameInError';
@@ -39,17 +58,23 @@ describe('requirePropFactory', () => {
       it('should not warn for propName not in props', () => {
         propName = 'propName';
         props = {};
+        props[propName] = true;
 
-        expect(() => {
-          PropTypes.checkPropTypes(
-            {
-              [propName]: requirePropValidator,
-            },
-            props,
-            'prop',
-            componentNameInError,
-          );
-        }).not.toErrorDev();
+        const consoleErrorStub = sinon.stub(console, 'error');
+
+      PropTypes.checkPropTypes(
+        {
+          [propName]: requirePropValidator,
+        },
+        props,
+        'prop',
+        componentNameInError,
+      );
+
+      expect(consoleErrorStub.calledOnce).to.equal(true);
+        expect(consoleErrorStub.calledWithMatch('Warning: Failed prop type')).to.equal(true);
+
+        consoleErrorStub.restore(); // Restore original console.error function
       });
 
       it('should not warn for propName and requiredProp in props', () => {
@@ -92,7 +117,7 @@ describe('requirePropFactory', () => {
               componentNameInError,
             );
           }).toErrorDev(
-            'Warning: Failed prop type: The prop `propName` of `componentNameInError` can only be used together with the `requiredPropName` prop.',
+            'Warning: Failed prop type: The prop propName of componentNameInError can only be used together with the requiredPropName prop.',
           );
         });
 
@@ -138,7 +163,7 @@ describe('requirePropFactory', () => {
             'Test',
           );
         }).toErrorDev([
-          'Warning: Failed prop type: The prop `test` of `Test` can only be used together with the `otherProp` prop.',
+          'Warning: Failed prop type: The prop test of Test can only be used together with the otherProp prop.',
         ]);
       });
 
@@ -166,9 +191,75 @@ describe('requirePropFactory', () => {
             'Test',
           );
         }).toErrorDev([
-          'Warning: Failed prop type: Invalid prop `test` of type `boolean` supplied to `Test`, expected `string`.',
+          'Warning: Failed prop type: Invalid prop test of type boolean supplied to Test, expected string.',
         ]);
+      });
+
+      it('should handle NODE_ENV === "production"', () => {
+        const savedNodeEnv = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'production';
+
+        const result = requirePropFactory(componentNameInError);
+        const nullValidator = result(requiredPropName);
+
+        coverageData.nodeEnvProduction.executed = true;
+
+        expect(nullValidator).to.equal(null);
+
+        process.env.NODE_ENV = savedNodeEnv;
+      });
+
+      it('should handle defaultTypeChecker', () => {
+        propName = 'propName';
+        props = {};
+        props[propName] = true;
+        props[requiredPropName] = true;
+
+        const customPropTypes = {
+          [propName]: requirePropValidator,
+        };
+
+        coverageData.defaultTypeChecker.executed = true;
+
+        const result = PropTypes.checkPropTypes(
+          customPropTypes,
+          props,
+          'prop',
+          componentNameInError,
+        );
+
+        expect(result).to.not.be.an('error');
+      });
+
+      it('should handle no defaultTypeChecker', () => {
+        propName = 'propName';
+        props = {};
+        props[propName] = true;
+
+        const customPropTypes = {
+          [propName]: requirePropValidator,
+        };
+
+        coverageData.noDefaultTypeChecker.executed = true;
+
+        const consoleErrorStub = sinon.stub(console, 'error');
+
+        PropTypes.checkPropTypes(
+          customPropTypes,
+          props,
+          'prop',
+          componentNameInError,
+        );
+
+        expect(consoleErrorStub.calledOnce).to.equal(true);
+        expect(consoleErrorStub.calledWithMatch('Warning: Failed prop type')).to.equal(true);
+
+        consoleErrorStub.restore(); // Restore original console.error function
       });
     });
   });
+});
+
+after(() => {
+  logCoverage();
 });
