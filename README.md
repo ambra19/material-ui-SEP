@@ -47,15 +47,17 @@ Raluca
 
 Briana
 
-<Function 1 name>
+<Tablist>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+Link to commit: (https://github.com/ambra19/material-ui-SEP/commit/82f8141451a3cd12e0d95dc6b820aa3821cb62ab)
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
-<Function 2 name>
+<ThemeProvider>
 
-<Provide the same kind of information provided for Function 1>
+Link to commit: (https://github.com/ambra19/material-ui-SEP/commit/82f8141451a3cd12e0d95dc6b820aa3821cb62ab)
+
+<Provide a screenshot of the coverage results output by the instrumentation>
 
 ////////////////////////////////
 
