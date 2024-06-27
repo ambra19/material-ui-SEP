@@ -66,13 +66,13 @@ Ambra
 
 <Traverse>
 
-https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
+Link to commit: https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
 <getThemeValue>
 
-https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
+Link to commit: https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
 
 <Provide a screenshot of the coverage results output by the instrumentation>
   
