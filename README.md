@@ -77,13 +77,13 @@ Ambra
 
 <Traverse>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
 <getThemeValue>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd228343ef58dbca283603c9305cdada
 
 <Provide a screenshot of the coverage results output by the instrumentation>
   
@@ -121,4 +121,4 @@ New Coverage Results:
 
 ## Statement of individual contributions
 
-<Write what each group member did>
+Each group member was focused on implementing their own piece of work, that is their own 2 functions.
