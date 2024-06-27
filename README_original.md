@@ -47,10 +47,10 @@ Use `@latest` for the latest stable release.
 
 ### Joy UI
 
-Visit [https://mui.com/joy-ui/getting-started/](https://mui.com/joy-ui/getting-started/) to view the full documentation.
+Visit [https://mui.com/joy-ui/getting-started/](https:
+We are adding new components regularly and you're welcome to contr//mui.com/joy-ui/getting-started/) to view the full documentation.
 
-**Note**: Joy UI is still in beta.
-We are adding new components regularly and you're welcome to contribute!
+**Note**: Joy UI is still in beta.ibute!
 
 ## Sponsors
 
