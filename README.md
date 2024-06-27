@@ -30,13 +30,13 @@ Raluca
 
 <getStyleValue>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the instrumented code to gather coverage measurements>
+https://github.com/ambra19/material-ui-SEP/commit/4e5ba4d5eebc7e880c76ec6ec8cac2a728278903
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
 <requirePropFactory>
 
-<Provide the same kind of information provided for Function 1>
+https://github.com/ambra19/material-ui-SEP/commit/4e5ba4d5eebc7e880c76ec6ec8cac2a728278903
 
 Briana
 
