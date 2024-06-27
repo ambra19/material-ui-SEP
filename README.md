@@ -24,12 +24,7 @@ How it was executed:
 
 3. Run test coverage of single file: pnpm run test:coverage:single ‘path_to_the_file’
 
-<Show the coverage results provided by the existing tool with a screenshot>
-
 ### Your own coverage tool
-
-<The following is supposed to be repeated for each group member>
-////////////////////////////////
   
 Raluca
 
@@ -42,8 +37,6 @@ Raluca
 <requirePropFactory>
 
 <Provide the same kind of information provided for Function 1>
-
-////////////////////////////////
 
 Briana
 
@@ -59,8 +52,6 @@ Link to commit: (https://github.com/ambra19/material-ui-SEP/commit/82f8141451a3c
 
 ![Sample Image](themeprovider.jpeg)
 
-////////////////////////////////
-
 Denisa
 
 <Function 1 name>
@@ -70,8 +61,6 @@ Denisa
 <Function 2 name>
 
 <Provide the same kind of information provided for Function 1>
-
-////////////////////////////////
 
 Ambra
 
