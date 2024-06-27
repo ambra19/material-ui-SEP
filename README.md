@@ -80,23 +80,36 @@ Link to commit: https://github.com/ambra19/material-ui-SEP/commit/7094e7a1dd2283
 
 ### Individual tests
 
+
 <The following is supposed to be repeated for each group member>
 
 <Group 116>
 
+Briana 
+
 <Test 1>
 
-<Show a patch (diff) or a link to a commit made in your forked repository that shows the new/enhanced test>
+![Sample Image](WhatsApp Image 2024-06-27 at 02.28.50.jpeg)
 
-<Provide a screenshot of the old coverage results (the same as you already showed above)>
+![Sample Image](themeprovider.jpeg)
 
-<Provide a screenshot of the new coverage results>
-
-<State the coverage improvement with a number and elaborate on why the coverage is improved>
 
 <Test 2>
 
+![Sample Image](WhatsApp Image 2024-06-28 at 00.44.02.jpeg)
+
+![Sample Image](tablist.jpeg)
+
+
 <Provide the same kind of information provided for Test 1>
+
+Ambra 
+
+
+Raluca 
+
+
+Denisa 
 
 ### Overall
 
