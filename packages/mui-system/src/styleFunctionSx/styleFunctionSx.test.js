@@ -2,6 +2,24 @@ import { expect } from 'chai';
 import styleFunctionSx from './styleFunctionSx';
 import cssContainerQueries from '../cssContainerQueries';
 
+const coverageData = {
+  handleTypographyInherit: { id: 2001, name: 'Handle Typography Inherit', executed: false },
+  handleCssPropertyFalse: { id: 2002, name: 'Handle CSS Property False', executed: false },
+  handleNullSxObject: { id: 2003, name: 'Handle Null SxObject', executed: false },
+  handleMergeCssAndGetThemeValue: { id: 2004, name: 'Handle Merge Css and getThemeValue', executed: false },
+  handleMergeCssAndBreakpoints: { id: 2005, name: 'Handle Merge Css and Breakpoints Value', executed: false },
+};
+
+const logCoverage = () => {
+  console.log('Coverage Data:');
+  for (const key in coverageData) {
+    if (coverageData.hasOwnProperty(key)) {
+      const { id, name, executed } = coverageData[key];
+      console.log(`ID: ${id} - ${name}: ${executed ? 'Executed' : 'Not Executed'}`);
+    }
+  }
+};
+
 describe('styleFunctionSx', () => {
   const breakpointsValues = {
     xs: 0,
@@ -20,7 +38,7 @@ describe('styleFunctionSx', () => {
       values: breakpointsValues,
       unit: 'px',
       up: (key) => {
-        return `@media (min-width:${breakpointsValues[key]}px)`;
+        return `@media (min-width:\`${breakpointsValues[key]}px\`)`;
       },
     },
     palette: {
@@ -50,6 +68,55 @@ describe('styleFunctionSx', () => {
         lineHeight: 1.43,
       },
     },
+  });
+
+  describe('system', () => {
+    it('handles null value', () => {
+      const result = styleFunctionSx({
+        theme,
+        sx: { typography: null },
+      });
+      expect(result).to.be.null;
+      coverageData.handleNullSxObject.executed = true;
+    });
+
+    it('handles typography: inherit', () => {
+      const result = styleFunctionSx({
+        theme,
+        sx: { typography: 'inherit' },
+      });
+      expect(result).to.deep.equal({ typography: 'inherit' });
+      coverageData.handleTypographyInherit.executed = true;
+    });
+
+    it('handles cssProperty: false', () => {
+      const result = styleFunctionSx({
+        theme,
+        sx: { color: false },
+      });
+      expect(result).to.equal(false);
+      coverageData.handleCssPropertyFalse.executed = true;
+    });
+
+    it('handles null sxObject', () => {
+      const result = styleFunctionSx({
+        theme,
+        sx: null,
+      });
+      expect(result).to.be.null;
+      coverageData.handleNullSxObject.executed = true;
+    });
+
+    it('handles object value and config[styleKey]', () => {
+      const result = styleFunctionSx({
+        theme,
+        sx: { color: { xs: 'primary.main' } },
+      });
+      expect(result).to.deep.equal({
+        '@media (min-width:0px)': { color: 'rgb(0, 0, 255)' },
+      });
+      coverageData.handleMergeCssAndGetThemeValue.executed = true;
+    });
   });
 
   describe('system', () => {
@@ -92,6 +159,7 @@ describe('styleFunctionSx', () => {
         '@media (min-width:1280px)': { border: '4px solid' },
         '@media (min-width:1920px)': { border: '5px solid' },
       });
+      coverageData.handleMergeCssAndGetThemeValue.executed = true;
     });
 
     it('resolves system typography', () => {
@@ -116,9 +184,10 @@ describe('styleFunctionSx', () => {
           lineHeight: 1.5,
         },
       });
+      coverageData.handleMergeCssAndBreakpoints.executed = true;
     });
 
-    it('allow values to be `null` or `undefined`', () => {
+    it('allow values to be null or undefined', () => {
       const result = styleFunctionSx({
         theme,
         sx: { typography: null, m: 0, p: null, transform: null },
@@ -126,6 +195,7 @@ describe('styleFunctionSx', () => {
       expect(result).to.deep.equal({
         margin: '0px',
       });
+      coverageData.handleNullSxObject.executed = true;
     });
   });
 
@@ -189,6 +259,7 @@ describe('styleFunctionSx', () => {
       });
 
       expect(result).to.deep.equal(breakpointsExpectedResult);
+      coverageData.handleMergeCssAndBreakpoints.executed = true;
     });
 
     it('resolves breakpoints object', () => {
@@ -355,7 +426,7 @@ describe('styleFunctionSx', () => {
     });
   });
 
-  describe('`sx` of function type', () => {
+  describe('sx of function type', () => {
     it('resolves system padding', () => {
       const result = styleFunctionSx({
         theme,
@@ -398,7 +469,7 @@ describe('styleFunctionSx', () => {
     });
   });
 
-  describe('`sx` of array type', () => {
+  describe('sx of array type', () => {
     it('resolves system props', () => {
       const result = styleFunctionSx({
         theme,
@@ -476,5 +547,9 @@ describe('styleFunctionSx', () => {
         }),
       ).not.to.throw();
     });
+  });
+
+  after(() => {
+    logCoverage();
   });
 });
