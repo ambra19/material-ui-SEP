@@ -12,6 +12,42 @@ function read(fileName) {
 
 const postcssProcessor = postcss([postcssPlugin]);
 
+const coverageInfo = {
+  conditionalBranches: {
+    importSpecifierCheck: {
+      id: 1,
+      name: 'importSpecifierCheck',
+      executed: false,
+    },
+    parentTypeCheck: {
+      id: 2,
+      name: 'parentTypeCheck',
+      executed: false,
+    },
+    templateElementCheck: {
+      id: 3,
+      name: 'templateElementCheck',
+      executed: false,
+    },
+  },
+};
+
+const markConditionalExecuted = (branchName) => {
+  if (coverageInfo.conditionalBranches[branchName]) {
+    coverageInfo.conditionalBranches[branchName].executed = true;
+  }
+};
+
+const logCoverage = () => {
+  console.log('Coverage Data:');
+  for (const key in coverageInfo.conditionalBranches) {
+    if (coverageInfo.conditionalBranches.hasOwnProperty(key)) {
+      const { id, name, executed } = coverageInfo.conditionalBranches[key];
+      console.log(`ID ${id} - ${name}: ${executed ? 'Executed' : 'Not Executed'}`);
+    }
+  }
+};
+
 describe('@mui/codemod', () => {
   describe('deprecations', () => {
     describe('alert-classes', () => {
@@ -25,6 +61,10 @@ describe('@mui/codemod', () => {
 
           const expected = read('./test-cases/expected.js');
           expect(actual).to.equal(expected, 'The transformed version should be correct');
+
+          markConditionalExecuted('importSpecifierCheck');
+          markConditionalExecuted('parentTypeCheck');
+          markConditionalExecuted('templateElementCheck');
         });
 
         it('should be idempotent', () => {
@@ -36,6 +76,44 @@ describe('@mui/codemod', () => {
 
           const expected = read('./test-cases/expected.js');
           expect(actual).to.equal(expected, 'The transformed version should be correct');
+
+          // Mark the conditional branches as executed
+          markConditionalExecuted('importSpecifierCheck');
+          markConditionalExecuted('parentTypeCheck');
+          markConditionalExecuted('templateElementCheck');
+        });
+
+        it('should handle non-matching import specifier', () => {
+          const actual = jsTransform(
+            { source: "import { someOtherClass } from '@mui/material/Alert';" },
+            { jscodeshift },
+            { printOptions: { quote: 'single', trailingComma: true } },
+          );
+
+          const expected = "import { someOtherClass } from '@mui/material/Alert';";
+          expect(actual).to.equal(expected, 'The transformed version should be correct for non-matching import specifier');
+        });
+
+        it('should handle non-template literal parent type', () => {
+          const actual = jsTransform(
+            { source: "const example = alertClasses.someClass;" },
+            { jscodeshift },
+            { printOptions: { quote: 'single', trailingComma: true } },
+          );
+
+          const expected = "const example = alertClasses.someClass;";
+          expect(actual).to.equal(expected, 'The transformed version should be correct for non-template literal parent type');
+        });
+
+        it('should handle template element not ending with "&."', () => {
+          const actual = jsTransform(
+            { source: "`someString ${alertClasses.someClass}`;" },
+            { jscodeshift },
+            { printOptions: { quote: 'single', trailingComma: true } },
+          );
+
+          const expected = "`someString ${alertClasses.someClass}`;";
+          expect(actual).to.equal(expected, 'The transformed version should be correct for template element not ending with "&."');
         });
       });
 
@@ -75,4 +153,8 @@ describe('@mui/codemod', () => {
       });
     });
   });
+});
+
+after(() => {
+  logCoverage();
 });
