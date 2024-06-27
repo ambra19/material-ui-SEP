@@ -54,11 +54,11 @@ Link to commit: (https://github.com/ambra19/material-ui-SEP/commit/82f8141451a3c
 
 Denisa
 
-<Function 1 name>
+<useLoaded>
 
 <Provide a screenshot of the coverage results output by the instrumentation>
 
-<Function 2 name>
+<Transformer>
 
 <Provide the same kind of information provided for Function 1>
 
