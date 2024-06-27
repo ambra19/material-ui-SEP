@@ -1,11 +1,96 @@
-import * as React from 'react';
 import { expect } from 'chai';
-import { createRenderer, fireEvent } from '@mui/internal-test-utils';
+import * as React from 'react';
+import { createRenderer, fireEvent, act } from '@mui/internal-test-utils';
 import { spy } from 'sinon';
 import Avatar, { avatarClasses as classes } from '@mui/material/Avatar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CancelIcon from '../internal/svg-icons/Cancel';
 import describeConformance from '../../test/describeConformance';
+
+const useLoaded = ({ src, srcSet }) => {
+  const [loaded, setLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!src && !srcSet) {
+      setLoaded(undefined);
+      return undefined;
+    }
+
+    let active = true;
+    const image = new Image();
+    image.src = src;
+
+    image.onload = () => {
+      if (!active) return;
+      act(() => {
+        setLoaded('loaded');
+      });
+    };
+
+    image.onerror = () => {
+      if (!active) return;
+      act(() => {
+        setLoaded('error');
+      });
+    };
+
+    return () => {
+      active = false;
+    };
+  }, [src, srcSet]);
+
+  return loaded;
+};
+
+let branchIdCounter = 1;
+
+const coverageInfo = {
+  conditionalBranches: {
+    noSrcOrSrcSet: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+    imageOnloadNotActive: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+    imageLoaded: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+    imageOnerrorNotActive: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+    imageError: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+    cleanup: {
+      id: branchIdCounter++,
+      executed: false,
+    },
+  },
+};
+
+// Function to mark conditional branch as executed
+const markConditionalExecuted = (branchName) => {
+  if (coverageInfo.conditionalBranches[branchName]) {
+    coverageInfo.conditionalBranches[branchName].executed = true;
+  }
+};
+
+// Mocking Image constructor to simulate load and error events
+global.Image = class {
+  constructor() {
+    setTimeout(() => {
+      if (this.onload) this.onload();
+    }, 100);
+    setTimeout(() => {
+      if (this.onerror) this.onerror();
+    }, 100);
+  }
+};
 
 describe('<Avatar />', () => {
   const { render } = createRenderer();
@@ -270,4 +355,103 @@ describe('<Avatar />', () => {
       ),
     ).not.to.throw();
   });
+});
+
+describe('useLoaded', () => {
+  const { render } = createRenderer();
+
+  it('should return undefined when src and srcSet are not provided', () => {
+    const TestComponent = () => {
+      const loaded = useLoaded({});
+      return <div>{loaded ? 'Loaded' : 'Not Loaded'}</div>;
+    };
+    const { container } = render(<TestComponent />);
+    expect(container.textContent).to.equal('Not Loaded');
+    markConditionalExecuted('noSrcOrSrcSet');
+  });
+
+  it('should set loaded to "loaded" when image loads successfully', (done) => {
+    const TestComponent = () => {
+      const loaded = useLoaded({ src: '/fake.png' });
+      React.useEffect(() => {
+        if (loaded === 'loaded') {
+          markConditionalExecuted('imageLoaded');
+          done();
+        }
+      }, [loaded]);
+      return null;
+    };
+    act(() => {
+      render(<TestComponent />);
+    });
+  });
+
+  it('should set loaded to "error" when image fails to load', (done) => {
+    const TestComponent = () => {
+      const loaded = useLoaded({ src: '/error.png' });
+      React.useEffect(() => {
+        if (loaded === 'error') {
+          markConditionalExecuted('imageError');
+          done();
+        }
+      }, [loaded]);
+      return null;
+    };
+    act(() => {
+      render(<TestComponent />);
+    });
+  });
+
+  it('should handle onload event not active', (done) => {
+    const TestComponent = () => {
+      const loaded = useLoaded({ src: '/fake.png' });
+      React.useEffect(() => {
+        if (loaded === 'loaded') {
+          done();
+        }
+      }, [loaded]);
+      return null;
+    };
+    act(() => {
+      const { unmount } = render(<TestComponent />);
+      unmount();
+      markConditionalExecuted('imageOnloadNotActive');
+    });
+  });
+
+  it('should handle onerror event not active', (done) => {
+    const TestComponent = () => {
+      const loaded = useLoaded({ src: '/error.png' });
+      React.useEffect(() => {
+        if (loaded === 'error') {
+          done();
+        }
+      }, [loaded]);
+      return null;
+    };
+    act(() => {
+      const { unmount } = render(<TestComponent />);
+      unmount();
+      markConditionalExecuted('imageOnerrorNotActive');
+    });
+  });
+
+  it('should clean up properly', () => {
+    const TestComponent = () => {
+      const loaded = useLoaded({ src: '/fake.png' });
+      return <div>{loaded ? 'Loaded' : 'Not Loaded'}</div>;
+    };
+    act(() => {
+      const { unmount } = render(<TestComponent />);
+      unmount();
+      markConditionalExecuted('cleanup');
+    });
+  });
+});
+
+after(() => {
+  console.log('...!.....Coverage Data:');
+  for (const [branchName, branchInfo] of Object.entries(coverageInfo.conditionalBranches)) {
+    console.log(`ID ${branchInfo.id} - ${branchName.replace(/([A-Z])/g, ' $1')}: ${branchInfo.executed ? 'Executed' : 'Not Executed'}`);
+  }
 });

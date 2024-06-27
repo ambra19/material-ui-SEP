@@ -148,6 +148,7 @@ describe('@mui/codemod', () => {
           expect(actualCSS).not.to.equal(
             expectedCSS,
             'The actual and expected should be different',
+
           );
         });
       });
