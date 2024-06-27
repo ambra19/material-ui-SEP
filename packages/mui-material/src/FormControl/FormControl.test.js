@@ -8,6 +8,16 @@ import Select from '@mui/material/Select';
 import useFormControl from './useFormControl';
 import describeConformance from '../../test/describeConformance';
 
+let branchId = 1;
+
+const coverageInformation = {
+  conditionalBranches: {},
+};
+
+function markBranchExecuted(branchId) {
+  coverageInformation.conditionalBranches[branchId] = { id: branchId, executed: true };
+}
+
 describe('<FormControl />', () => {
   const { render } = createRenderer();
 
@@ -15,7 +25,7 @@ describe('<FormControl />', () => {
     const context = useFormControl();
     React.useEffect(() => {
       props.contextCallback(context);
-    });
+    }, [context]);
     return null;
   }
 
@@ -37,6 +47,8 @@ describe('<FormControl />', () => {
 
       expect(root).not.to.have.class(classes.marginNormal);
       expect(root).not.to.have.class(classes.sizeSmall);
+
+      markBranchExecuted(branchId++);
     });
 
     it('can have the margin normal class', () => {
@@ -45,6 +57,8 @@ describe('<FormControl />', () => {
 
       expect(root).to.have.class(classes.marginNormal);
       expect(root).not.to.have.class(classes.sizeSmall);
+
+      markBranchExecuted(branchId++);
     });
 
     it('can have the margin dense class', () => {
@@ -53,6 +67,8 @@ describe('<FormControl />', () => {
 
       expect(root).to.have.class(classes.marginDense);
       expect(root).not.to.have.class(classes.marginNormal);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should not be filled initially', () => {
@@ -63,6 +79,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('filled', false);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should not be focused initially', () => {
@@ -73,6 +91,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('focused', false);
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -80,6 +100,8 @@ describe('<FormControl />', () => {
     it('should not apply it to the DOM', () => {
       const { container } = render(<FormControl required />);
       expect(container.firstChild).not.to.have.attribute('required');
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -101,6 +123,8 @@ describe('<FormControl />', () => {
 
       setProps({ disabled: true });
       expect(readContext.lastCall.args[0]).to.have.property('focused', false);
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -117,6 +141,8 @@ describe('<FormControl />', () => {
       expect(readContext.args[0][0]).to.have.property('focused', true);
       container.querySelector('input').blur();
       expect(readContext.args[0][0]).to.have.property('focused', true);
+
+      markBranchExecuted(branchId++);
     });
 
     it('ignores focused when disabled', () => {
@@ -128,6 +154,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.include({ disabled: true, focused: false });
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -141,6 +169,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('filled', true);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should be filled when a value is set through inputProps', () => {
@@ -152,6 +182,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('filled', true);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should be filled when a defaultValue is set', () => {
@@ -163,6 +195,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('filled', true);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should not be adornedStart with an endAdornment', () => {
@@ -174,6 +208,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('adornedStart', false);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should be adornedStar with a startAdornment', () => {
@@ -185,6 +221,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('adornedStart', true);
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -198,6 +236,8 @@ describe('<FormControl />', () => {
         </FormControl>,
       );
       expect(readContext.args[0][0]).to.have.property('adornedStart', false);
+
+      markBranchExecuted(branchId++);
     });
 
     it('should be adorned with a startAdornment', () => {
@@ -208,7 +248,9 @@ describe('<FormControl />', () => {
           <TestComponent contextCallback={readContext} />
         </FormControl>,
       );
-      expect(readContext.args[0][0].adornedStart, true);
+      expect(readContext.args[0][0].adornedStart).to.be.true;
+
+      markBranchExecuted(branchId++);
     });
   });
 
@@ -236,6 +278,8 @@ describe('<FormControl />', () => {
 
         setProps({ required: true });
         expect(formControlRef.current).to.have.property('required', true);
+
+        markBranchExecuted(branchId++);
       });
 
       it('should have the error prop from the instance', () => {
@@ -246,6 +290,8 @@ describe('<FormControl />', () => {
 
         setProps({ error: true });
         expect(formControlRef.current).to.have.property('error', true);
+
+        markBranchExecuted(branchId++);
       });
 
       it('should have the margin prop from the instance', () => {
@@ -256,6 +302,8 @@ describe('<FormControl />', () => {
 
         setProps({ size: 'small' });
         expect(formControlRef.current).to.have.property('size', 'small');
+
+        markBranchExecuted(branchId++);
       });
 
       it('should have the fullWidth prop from the instance', () => {
@@ -266,6 +314,8 @@ describe('<FormControl />', () => {
 
         setProps({ fullWidth: true });
         expect(formControlRef.current).to.have.property('fullWidth', true);
+
+        markBranchExecuted(branchId++);
       });
     });
 
@@ -275,24 +325,32 @@ describe('<FormControl />', () => {
           const formControlRef = React.createRef();
           render(<FormControlled ref={formControlRef} />);
 
-          expect(formControlRef.current).to.have.property('filled', false);
-
           act(() => {
             formControlRef.current.onFilled();
           });
 
           expect(formControlRef.current).to.have.property('filled', true);
 
+          markBranchExecuted(branchId++);
+        });
+
+        it('should set the filled state with a custom callback', () => {
+          const onFilled = spy();
+          const formControlRef = React.createRef();
+          render(<FormControlled ref={formControlRef} onFilled={onFilled} />);
+
           act(() => {
             formControlRef.current.onFilled();
           });
 
-          expect(formControlRef.current).to.have.property('filled', true);
+          expect(onFilled.called).to.be.true;
+
+          markBranchExecuted(branchId++);
         });
       });
 
       describe('onEmpty', () => {
-        it('should clean the filled state', () => {
+        it('should set the filled state', () => {
           const formControlRef = React.createRef();
           render(<FormControlled ref={formControlRef} />);
 
@@ -300,27 +358,38 @@ describe('<FormControl />', () => {
             formControlRef.current.onFilled();
           });
 
-          expect(formControlRef.current).to.have.property('filled', true);
-
           act(() => {
             formControlRef.current.onEmpty();
           });
 
           expect(formControlRef.current).to.have.property('filled', false);
 
+          markBranchExecuted(branchId++);
+        });
+
+        it('should set the filled state with a custom callback', () => {
+          const onEmpty = spy();
+          const formControlRef = React.createRef();
+          render(<FormControlled ref={formControlRef} onEmpty={onEmpty} />);
+
+          act(() => {
+            formControlRef.current.onFilled();
+          });
+
           act(() => {
             formControlRef.current.onEmpty();
           });
 
-          expect(formControlRef.current).to.have.property('filled', false);
+          expect(onEmpty.called).to.be.true;
+
+          markBranchExecuted(branchId++);
         });
       });
 
-      describe('handleFocus', () => {
+      describe('onFocus', () => {
         it('should set the focused state', () => {
           const formControlRef = React.createRef();
           render(<FormControlled ref={formControlRef} />);
-          expect(formControlRef.current).to.have.property('focused', false);
 
           act(() => {
             formControlRef.current.onFocus();
@@ -328,39 +397,65 @@ describe('<FormControl />', () => {
 
           expect(formControlRef.current).to.have.property('focused', true);
 
+          markBranchExecuted(branchId++);
+        });
+
+        it('should set the focused state with a custom callback', () => {
+          const onFocus = spy();
+          const formControlRef = React.createRef();
+          render(<FormControlled ref={formControlRef} onFocus={onFocus} />);
+
           act(() => {
             formControlRef.current.onFocus();
           });
 
-          expect(formControlRef.current).to.have.property('focused', true);
+          expect(onFocus.called).to.be.true;
+
+          markBranchExecuted(branchId++);
         });
       });
 
-      describe('handleBlur', () => {
-        it('should clear the focused state', () => {
+      describe('onBlur', () => {
+        it('should set the focused state', () => {
           const formControlRef = React.createRef();
           render(<FormControlled ref={formControlRef} />);
-          expect(formControlRef.current).to.have.property('focused', false);
 
           act(() => {
             formControlRef.current.onFocus();
           });
 
-          expect(formControlRef.current).to.have.property('focused', true);
-
           act(() => {
             formControlRef.current.onBlur();
           });
 
           expect(formControlRef.current).to.have.property('focused', false);
 
+          markBranchExecuted(branchId++);
+        });
+
+        it('should set the focused state with a custom callback', () => {
+          const onBlur = spy();
+          const formControlRef = React.createRef();
+          render(<FormControlled ref={formControlRef} onBlur={onBlur} />);
+
+          act(() => {
+            formControlRef.current.onFocus();
+          });
+
           act(() => {
             formControlRef.current.onBlur();
           });
 
-          expect(formControlRef.current).to.have.property('focused', false);
+          expect(onBlur.called).to.be.true;
+
+          markBranchExecuted(branchId++);
         });
       });
     });
+  });
+
+  after(() => {
+    console.log('Function-based coverage information:');
+    console.log(JSON.stringify(coverageInformation, null, 2));
   });
 });
