@@ -109,9 +109,13 @@ Ambra
 
 ### Overall
 
-<Provide a screenshot of the old coverage results by running an existing tool (the same as you already showed above)>
+Old Coverage Results:
 
 ![Sample Image](coverage-img/Coverage.png)
+
+New Coverage Results:
+
+
 
 ## Statement of individual contributions
 
